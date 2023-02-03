@@ -1,0 +1,35 @@
+.selectField {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  .selectFieldLeft {
+    padding: 10px;
+    width: 30%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    overflow: scroll;
+
+    .css-1nrlq1o-MuiFormControl-root {
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+    }
+  }
+
+  .selectRight {
+    padding: 10px;
+    width: 70%;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    // overflow: scroll;
+
+    .css-1nrlq1o-MuiFormControl-root {
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+    }
+  }
+}
