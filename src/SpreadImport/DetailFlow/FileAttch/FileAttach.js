@@ -1,12 +1,15 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import _ from "lodash";
 import * as XLSX from "xlsx";
-import SelectField from "./SelectField";
+import SelectField from "./Components/SelectField";
 import "./FileAttach.scss";
 
 const FileAttach = ({
   setSelectXlsxData,
   toggleButton,
   handleStepComplete,
+  setCompleted,
+  activeStep,
 }) => {
   const dragRef = useRef(null);
   const [file, setFile] = useState({});
@@ -47,7 +50,9 @@ const FileAttach = ({
     const workbook = XLSX.read(readFile, {
       cellDates: true,
       dateNF: "yyyy-mm-dd",
+      cellNF: true,
       raw: true,
+      cellStyles: true,
     });
 
     const sheetList = workbook.SheetNames;
@@ -61,29 +66,27 @@ const FileAttach = ({
         raw: false,
       });
 
-      console.log(json);
+      const json_max_length = _.maxBy(json.map((com) => com.length));
 
-      setXlsxData((prev) => [...prev, { id: idx, name: com, data: json }]);
+      const emtry_json = json.map((com) => {
+        const new_arr = [];
+
+        for (let i = 0; i < json_max_length; i++) {
+          if (com[i] === undefined) {
+            new_arr.push(null);
+          } else {
+            new_arr.push(com[i]);
+          }
+        }
+
+        return new_arr;
+      });
+
+      setXlsxData((prev) => [
+        ...prev,
+        { id: idx, name: com, data: emtry_json },
+      ]);
     });
-
-    // const reader = new FileReader();
-
-    // reader.onload = (e) => {
-    //   const data = e.target.result;
-    //   const workbook = XLSX.read(data, { type: "array", cellDates: "rows" });
-
-    //   const sheetList = workbook.SheetNames;
-
-    //   sheetList.forEach((com, idx) => {
-    //     const worksheet = workbook.Sheets[com];
-
-    //     const json = XLSX.utils.sheet_to_json(worksheet);
-
-    //     setXlsxData((prev) => [...prev, { id: idx, name: com, data: json }]);
-    //   });
-    // };
-
-    // reader.readAsArrayBuffer(selectFile);
   }, []);
 
   const handleDrop = useCallback(
@@ -97,8 +100,6 @@ const FileAttach = ({
   );
 
   const initDragEvents = useCallback(() => {
-    // 앞서 말했던 4개의 이벤트에 Listener를 등록합니다. (마운트 될때)
-
     if (dragRef.current !== null) {
       dragRef.current.addEventListener("dragenter", handleDragIn);
       dragRef.current.addEventListener("dragleave", handleDragOut);
@@ -108,8 +109,6 @@ const FileAttach = ({
   }, [handleDragIn, handleDragOut, handleDragOver, handleDrop]);
 
   const resetDragEvents = useCallback(() => {
-    // 앞서 말했던 4개의 이벤트에 Listener를 삭제합니다. (언마운트 될때)
-
     if (dragRef.current !== null) {
       dragRef.current.removeEventListener("dragenter", handleDragIn);
       dragRef.current.removeEventListener("dragleave", handleDragOut);
@@ -157,6 +156,8 @@ const FileAttach = ({
           setSelectXlsxData={setSelectXlsxData}
           xlsxData={xlsxData}
           handleStepComplete={handleStepComplete}
+          setCompleted={setCompleted}
+          activeStep={activeStep}
         />
       )}
     </div>

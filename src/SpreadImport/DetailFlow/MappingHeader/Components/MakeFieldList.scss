@@ -1,0 +1,79 @@
+.makeFieldList {
+  position: absolute;
+  top: 0;
+  right: -20px;
+  height: 100%;
+
+  display: flex;
+
+  .makeFieldListLeft {
+    width: 20px;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #fafafa;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all ease-in-out 0.3s;
+    cursor: pointer;
+  }
+
+  .makeFieldListLeft:hover {
+    background-color: lightgray;
+
+    transition: all ease-in-out 0.3s;
+  }
+
+  .makeFieldListRight {
+    width: 300px;
+    height: 100%;
+    padding: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: white;
+
+    .makeFieldListTitle {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .makeFieldListAddButton {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .makeFieldListRight.open {
+    animation: slide-in-right 0.3s;
+  }
+
+  .makeFieldListRight.close {
+    animation: slide-out-right 0.3s;
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    width: 0px;
+    opacity: 0;
+  }
+  100% {
+    width: 300px;
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-right {
+  0% {
+    width: 300px;
+    opacity: 1;
+  }
+  100% {
+    width: 0px;
+    opacity: 0;
+  }
+}

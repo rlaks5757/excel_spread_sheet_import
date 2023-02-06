@@ -24,12 +24,33 @@
     height: 100%;
     display: flex;
     align-items: flex-start;
-    // overflow: scroll;
+    overflow: scroll;
 
     .css-1nrlq1o-MuiFormControl-root {
       width: 100%;
       height: 100%;
       overflow: scroll;
+      scrollbar-width: none;
+    }
+
+    .radioFieldLabel {
+      display: flex;
+
+      .radioFieldLabelDetail {
+        align-items: center;
+        // justify-content: center;
+
+        padding: 10px;
+        width: 120px;
+
+        font-size: 14px;
+
+        overflow: hidden;
+        text-overflow: ellipsis !important;
+        white-space: nowrap;
+
+        border: 1px solid lightgrey;
+      }
     }
   }
 }

@@ -1,0 +1,32 @@
+.mappingTable {
+  width: 100%;
+  height: calc(50% - 10px);
+  margin-top: 10px;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  .mappingTableContents {
+    .mappingTableTitle {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .fieldMapping {
+      display: flex;
+      overflow-y: scroll;
+
+      -ms-overflow-style: none;
+
+      .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+        width: 44px;
+      }
+    }
+
+    .fieldMapping::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

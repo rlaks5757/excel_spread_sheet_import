@@ -1,73 +1,82 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import "react-data-grid/lib/styles.css";
 import "./SelectField.scss";
 
-const SelectField = ({ setSelectXlsxData, xlsxData, handleStepComplete }) => {
+const SelectField = ({
+  setSelectXlsxData,
+  xlsxData,
+  setCompleted,
+  activeStep,
+}) => {
+  const [selectSheet, setSelectSheet] = useState(xlsxData[0]["name"]);
+  const [sheetField, setSheetField] = useState(null);
+
   const sheetList = useMemo(() => {
     return xlsxData.map((com) => com.name);
   }, [xlsxData]);
 
-  console.log(xlsxData);
-
-  const [selectSheet, setSelectSheet] = useState(xlsxData[0]["name"]);
-
   const sheetFieldList = useMemo(() => {
     const selected = xlsxData.find((com) => com.name === selectSheet);
 
-    const selectedUniqKeys = selected["data"].map((com) => Object.keys(com));
+    const selectedValue = selected["data"];
 
-    const selectedUniqKey = _.uniq(selectedUniqKeys.flat());
-
-    const selectedValue = selected["data"].map((com) => Object.values(com));
-
-    selectedValue.unshift(selectedUniqKey);
-
-    return selectedValue.flat().length === 0 ? [] : selectedValue;
+    return selectedValue;
   }, [selectSheet, xlsxData]);
 
-  const [sheetField, setSheetField] = useState(null);
-  const [sheetFieldIndex, setSheetFieldIndex] = useState(0);
-
-  const handleField = useCallback(
-    (name) => {
-      const selected = xlsxData.find((com) => com.name === name);
-
-      const selectedUniqKeys = selected["data"].map((com) => Object.keys(com));
-
-      const selectedUniqKey = _.uniq(selectedUniqKeys.flat());
-
-      const selectedValue = selected["data"].map((com) => Object.values(com));
-
-      selectedValue.unshift(selectedUniqKey);
-
-      setSheetField(
-        selectedValue[0] === undefined ? "없음" : selectedValue[0].join()
-      );
-    },
-    [xlsxData]
-  );
-
   useEffect(() => {
-    if (selectSheet && sheetField) {
-      const selected = xlsxData.find((com) => com.name === selectSheet);
+    if (sheetField !== null) {
+      setCompleted((prev) => ({ ...prev, [activeStep]: true }));
 
-      const xlsxDataCustom = {
-        ...selected,
-        idx: sheetFieldIndex,
-        header: sheetFieldList[sheetFieldIndex],
-        customData: selected.data.slice(sheetFieldIndex, selected.data.length),
+      const slice_list = sheetFieldList.slice(
+        sheetField,
+        sheetFieldList.length
+      );
+
+      const slice_list_max_length = _.maxBy(
+        slice_list.map((com) => com.length)
+      );
+
+      const data_obj = {
+        sheetName: selectSheet,
+        table_data: slice_list,
+        max_length: slice_list_max_length,
       };
 
-      setSelectXlsxData(xlsxDataCustom);
+      setSelectXlsxData((prev) => ({ ...prev, ...data_obj }));
+    } else {
+      setCompleted((prev) => ({ ...prev, [activeStep]: false }));
 
-      handleStepComplete();
+      const data_obj = {
+        sheetName: null,
+        table_data: [],
+        max_length: 0,
+      };
+
+      setSelectXlsxData((prev) => ({ ...prev, ...data_obj }));
     }
-  }, [selectSheet, sheetField, sheetFieldList]);
+  }, [sheetField, activeStep, setCompleted]);
+
+  const handleFieldLabel = (arr) => {
+    const create_label = arr.map((com, idx) => {
+      return (
+        <div className="radioFieldLabelDetail" key={idx}>
+          <span>{com}</span>
+        </div>
+      );
+    });
+
+    return (
+      <div className="radioFieldLabel" style={{ textOverflow: "ellipsis" }}>
+        {create_label}
+      </div>
+    );
+  };
 
   return (
     <div className="selectField">
@@ -82,7 +91,7 @@ const SelectField = ({ setSelectXlsxData, xlsxData, handleStepComplete }) => {
             name="radio-buttons-group"
             onChange={(e) => {
               setSelectSheet(e.target.value);
-              handleField(e.target.value);
+              setSheetField(null);
             }}
           >
             {sheetList.map((com, idx) => {
@@ -101,14 +110,13 @@ const SelectField = ({ setSelectXlsxData, xlsxData, handleStepComplete }) => {
       <div className="selectRight">
         <FormControl>
           <FormLabel id="demo-radio-buttons-group-label">
-            사용할 Header를 선택하여 주세요
+            사용할 Table Data 시작 지점을 선택하여 주시기 바랍니다.
           </FormLabel>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             value={sheetField}
             name="radio-buttons-group"
             onChange={(e) => {
-              setSheetFieldIndex(Number(e.target.name));
               setSheetField(e.target.value);
             }}
           >
@@ -116,9 +124,9 @@ const SelectField = ({ setSelectXlsxData, xlsxData, handleStepComplete }) => {
               return (
                 <FormControlLabel
                   key={idx}
-                  value={com.join()}
+                  value={idx}
                   control={<Radio />}
-                  label={com.join()}
+                  label={handleFieldLabel(com)}
                   name={String(idx)}
                 />
               );
