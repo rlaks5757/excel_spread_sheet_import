@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import WorkFlow from "./Components/WorkFlow";
-import FileAttach from "./Components/FileAttach";
+import WorkFlow from "./DetailFlow/WorkFlow";
+import FileAttach from "./DetailFlow/FileAttch/FileAttach";
+import MappingHeader from "./DetailFlow/MappingHeader/MappingHeader";
 import "./SpreadImport.scss";
 
 const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
 
-  const [selectXlsxData, setSelectXlsxData] = useState({});
+  const [selectXlsxData, setSelectXlsxData] = useState({
+    sheetName: null,
+    table_data: [],
+    max_length: 0,
+  });
 
   const handleNextStep = () => {
     setActiveStep((prev) => prev + 1);
@@ -24,8 +29,18 @@ const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
         return (
           <FileAttach
             setSelectXlsxData={setSelectXlsxData}
+            setCompleted={setCompleted}
+            activeStep={activeStep}
             toggleButton={toggleButton}
             handleStepComplete={handleStepComplete}
+          />
+        );
+      case 1:
+        return (
+          <MappingHeader
+            setCompleted={setCompleted}
+            activeStep={activeStep}
+            selectXlsxData={selectXlsxData}
           />
         );
       default:
