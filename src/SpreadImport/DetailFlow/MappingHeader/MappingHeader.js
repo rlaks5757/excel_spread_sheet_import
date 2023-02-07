@@ -5,7 +5,12 @@ import MappingTable from "./Components/MappingTable";
 import MakeFieldList from "./Components/MakeFieldList";
 import "./MappingHeader.scss";
 
-const MappingHeader = ({ setCompleted, activeStep, selectXlsxData }) => {
+const MappingHeader = ({
+  setCompleted,
+  activeStep,
+  selectXlsxData,
+  setTableData,
+}) => {
   const [useField, setUseField] = useState([]);
   const [fieldList, setFieldList] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -23,8 +28,8 @@ const MappingHeader = ({ setCompleted, activeStep, selectXlsxData }) => {
         use: true,
         field_name: "",
         field_type: "",
-        concat_field: [],
-        concat_type: "",
+        // concat_field: [],
+        // concat_type: "",
       });
     }
 
@@ -44,8 +49,21 @@ const MappingHeader = ({ setCompleted, activeStep, selectXlsxData }) => {
       use_list.length + not_use_list.length === useField.length &&
       use_list.length > 0
     ) {
+      const use_data = useField.filter((com) => com.use);
+
+      const tableDataSet = create_table_data(selectXlsxData, use_data);
+
+      setTableData({
+        field_list: use_data.map((com) => com.field_name),
+        field_data: tableDataSet,
+      });
+
       setCompleted((prev) => ({ ...prev, [activeStep]: true }));
     } else {
+      setTableData({
+        field_list: [],
+        field_data: [],
+      });
       setCompleted((prev) => ({ ...prev, [activeStep]: false }));
     }
   }, [useField]);
@@ -82,7 +100,30 @@ const MappingHeader = ({ setCompleted, activeStep, selectXlsxData }) => {
 
 export default MappingHeader;
 
-const obj = {
-  field: "",
-  label: "",
+const create_table_data = (xlsx_data, custom_field) => {
+  const concat_data = xlsx_data.table_data.map((com) => {
+    const data = {};
+    custom_field.forEach((com2) => {
+      const id = com2.id;
+
+      data[id] = handleDataType(com[id], com2.field_type);
+    });
+
+    return data;
+  });
+
+  return concat_data;
+};
+
+const handleDataType = (data, type) => {
+  switch (type) {
+    case "String":
+      return String(data);
+    case "Number":
+      return Number(data);
+    case "Date":
+      return new Date(data);
+    default:
+      return String(data);
+  }
 };
