@@ -21,8 +21,6 @@ const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
     field_data: [],
   });
 
-  console.log(tableData);
-
   const handleNextStep = () => {
     setActiveStep((prev) => prev + 1);
   };
@@ -57,7 +55,8 @@ const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
           <FixedTable
             setCompleted={setCompleted}
             activeStep={activeStep}
-            selectXlsxData={selectXlsxData}
+            tableData={tableData}
+            setTableData={setTableData}
           />
         );
 

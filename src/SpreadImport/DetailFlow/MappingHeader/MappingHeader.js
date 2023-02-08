@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-
+import axios from "axios";
 import BaseTable from "./Components/BaseTable";
 import MappingTable from "./Components/MappingTable";
 import MakeFieldList from "./Components/MakeFieldList";
+import { url } from "../../../url";
 import "./MappingHeader.scss";
 
 const MappingHeader = ({
@@ -12,10 +13,20 @@ const MappingHeader = ({
   setTableData,
 }) => {
   const [useField, setUseField] = useState([]);
-  const [fieldList, setFieldList] = useState([
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-  ]);
+  const [fieldList, setFieldList] = useState([]);
   const [fieldListToggle, setFieldListToggle] = useState(true);
+
+  const [bplist, setBpList] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const request_bp_list = await axios.get(`${url}/getbplist`);
+
+      setBpList(request_bp_list.data.data);
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const max_length = selectXlsxData.max_length;
@@ -54,7 +65,7 @@ const MappingHeader = ({
       const tableDataSet = create_table_data(selectXlsxData, use_data);
 
       setTableData({
-        field_list: use_data.map((com) => com.field_name),
+        field_list: use_data,
         field_data: tableDataSet,
       });
 
@@ -78,7 +89,6 @@ const MappingHeader = ({
             useField={useField}
           />
           <MappingTable
-            selectXlsxData={selectXlsxData}
             setUseField={setUseField}
             useField={useField}
             fieldList={fieldList}
@@ -91,6 +101,7 @@ const MappingHeader = ({
             fieldList={fieldList}
             fieldListToggle={fieldListToggle}
             useField={useField}
+            bplist={bplist}
           />
         </>
       )}
@@ -106,7 +117,7 @@ const create_table_data = (xlsx_data, custom_field) => {
     custom_field.forEach((com2) => {
       const id = com2.id;
 
-      data[id] = handleDataType(com[id], com2.field_type);
+      data[com2.field_name] = handleDataType(com[id], com2.field_type);
     });
 
     return data;
