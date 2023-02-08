@@ -5,11 +5,21 @@ import Select from "@mui/material/Select";
 
 import "./MappingTable.scss";
 
-const MappingTable = ({ selectXlsxData, setUseField, useField, fieldList }) => {
+const MappingTable = ({ setUseField, useField, fieldList }) => {
   const handleChange = (idx, event, type) => {
     const find_index = useField.findIndex((com) => com.id === idx);
 
     if (type === "name") {
+      const find_indexs = useField.filter(
+        (com) => com.field_name === event.target.value
+      );
+      if (find_indexs.length > 0) {
+        find_indexs.forEach((com) => {
+          const delete_index = useField.findIndex((com2) => com.id === com2.id);
+
+          useField[delete_index]["field_name"] = "";
+        });
+      }
       useField[find_index]["field_name"] = event.target.value;
     } else {
       useField[find_index]["field_type"] = event.target.value;

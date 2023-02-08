@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import WorkFlow from "./DetailFlow/WorkFlow";
 import FileAttach from "./DetailFlow/FileAttch/FileAttach";
 import MappingHeader from "./DetailFlow/MappingHeader/MappingHeader";
+import FixedTable from "./DetailFlow/FixedTable/FixedTable";
 import "./SpreadImport.scss";
 
 const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
@@ -13,6 +14,11 @@ const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
     sheetName: null,
     table_data: [],
     max_length: 0,
+  });
+
+  const [tableData, setTableData] = useState({
+    field_list: [],
+    field_data: [],
   });
 
   const handleNextStep = () => {
@@ -41,8 +47,19 @@ const SpreadImport = ({ handleToggle, toggleButton, animationBoolean }) => {
             setCompleted={setCompleted}
             activeStep={activeStep}
             selectXlsxData={selectXlsxData}
+            setTableData={setTableData}
           />
         );
+      case 2:
+        return (
+          <FixedTable
+            setCompleted={setCompleted}
+            activeStep={activeStep}
+            tableData={tableData}
+            setTableData={setTableData}
+          />
+        );
+
       default:
         return "";
     }

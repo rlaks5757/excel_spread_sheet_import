@@ -10,6 +10,7 @@ const MakeFieldList = ({
   fieldList,
   fieldListToggle,
   useField,
+  bplist,
 }) => {
   const [fieldListCom, setFieldListCom] = useState(true);
 
