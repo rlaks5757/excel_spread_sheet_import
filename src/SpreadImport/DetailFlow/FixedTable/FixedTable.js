@@ -29,7 +29,7 @@ const FixedTable = ({ setCompleted, activeStep, tableData, setTableData }) => {
         <>
           <div className="fixedTableHeader">
             {customTableData.field_list.map((com, idx) => {
-              return <div key={idx}>{com.field_name}</div>;
+              return <div key={idx}>{com.field_label}</div>;
             })}
           </div>
           <div className="fixedTableBody">
