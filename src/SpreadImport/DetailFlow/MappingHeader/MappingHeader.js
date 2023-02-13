@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import _ from "lodash";
 import BaseTable from "./Components/BaseTable";
 import MappingTable from "./Components/MappingTable";
 import MakeFieldList from "./Components/MakeFieldList";
-import { url } from "../../../url";
+import url from "../../../url";
 import "./MappingHeader.scss";
 
 const MappingHeader = ({
@@ -22,7 +23,7 @@ const MappingHeader = ({
     const fetchData = async () => {
       const request_bp_list = await axios.get(`${url}/getbplist`);
 
-      setBpList(request_bp_list.data.data);
+      setBpList(_.sortBy(request_bp_list.data.data, "BP_NAME"));
     };
 
     fetchData();
@@ -38,6 +39,7 @@ const MappingHeader = ({
         id: i,
         use: true,
         field_name: "",
+        field_label: "",
         field_type: "",
         // concat_field: [],
         // concat_type: "",
@@ -83,24 +85,23 @@ const MappingHeader = ({
     <div className="mappingHeader">
       {useField.length > 0 && (
         <>
-          <BaseTable
+          {/* <BaseTable
             selectXlsxData={selectXlsxData}
             setUseField={setUseField}
             useField={useField}
-          />
+          /> */}
           <MappingTable
             setUseField={setUseField}
             useField={useField}
             fieldList={fieldList}
+            selectXlsxData={selectXlsxData}
           />
 
           <MakeFieldList
             setFieldListToggle={setFieldListToggle}
             setFieldList={setFieldList}
-            setUseField={setUseField}
             fieldList={fieldList}
             fieldListToggle={fieldListToggle}
-            useField={useField}
             bplist={bplist}
           />
         </>

@@ -1,6 +1,6 @@
 .mappingTable {
   width: 100%;
-  height: calc(50% - 10px);
+
   margin-top: 10px;
   position: relative;
 
@@ -8,25 +8,95 @@
   flex-direction: column;
   justify-content: space-around;
 
+  overflow: scroll;
+
   .mappingTableContents {
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
+
     .mappingTableTitle {
       font-size: 20px;
       font-weight: bold;
     }
 
-    .fieldMapping {
-      display: flex;
-      overflow-y: scroll;
+    .fieldMappingTableBody {
+      overflow-x: scroll;
 
-      -ms-overflow-style: none;
+      display: block;
 
-      .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-        width: 44px;
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+
+        .fieldMappingTableHeader {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+            width: 156px;
+          }
+        }
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        height: 20px;
+        width: 100%;
+      }
+
+      // tr:nth-child(even) {
+      //   background-color: #dddddd;
+      // }
+
+      .baseTableRow {
+        width: 200px;
       }
     }
 
-    .fieldMapping::-webkit-scrollbar {
+    .fieldMappingTableBody::-webkit-scrollbar {
       display: none;
     }
+
+    .baseTableRow {
+      position: relative;
+      padding: 10px;
+      width: 120px;
+
+      font-size: 14px;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      // .baseTableRowUse {
+      //   position: absolute;
+      //   top: 8px;
+      //   right: 5px;
+      // }
+    }
+
+    .baseTableRow.notuse {
+      color: #fafafa;
+    }
+
+    // .fieldMapping {
+    //   display: flex;
+    //   overflow-y: scroll;
+
+    //   -ms-overflow-style: none;
+
+    //   .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+    //     width: 44px;
+    //   }
+    // }
+
+    // .fieldMapping::-webkit-scrollbar {
+    //   display: none;
+    // }
   }
 }
