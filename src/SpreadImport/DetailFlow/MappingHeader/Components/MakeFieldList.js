@@ -1,18 +1,25 @@
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
+import _ from "lodash";
+import axios from "axios";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import url from "../../../../url";
 import "./MakeFieldList.scss";
 
 const MakeFieldList = ({
   setFieldListToggle,
   setFieldList,
-  setUseField,
   fieldList,
   fieldListToggle,
-  useField,
   bplist,
 }) => {
   const [fieldListCom, setFieldListCom] = useState(true);
+
+  const [selectValue, setSelectValue] = useState("");
 
   const handleToggle = () => {
     if (fieldListToggle && fieldListCom) {
@@ -24,28 +31,21 @@ const MakeFieldList = ({
     }
   };
 
-  const handleFieldList = (type) => {
-    const resetUseField = useField.map((com) => ({ ...com, field_name: "" }));
+  const requestFieldList = async (e, n) => {
+    const value = n["BP_TYPE"];
 
-    setUseField([...resetUseField]);
+    // const value = e.target.value;
 
-    if (type === "add") {
-      fieldList.push("");
-    } else {
-      if (fieldList.length === 1) return;
+    const request_field_list = await axios.post(`${url}/getbpfieldlist`, {
+      bp_name: value,
+    });
 
-      fieldList.pop();
-    }
-
-    setFieldList([...fieldList]);
-  };
-
-  const changeFieldListContents = (e, idx) => {
-    const resetUseField = useField.map((com) => ({ ...com, field_name: "" }));
-    setUseField([...resetUseField]);
-
-    fieldList[idx] = e.target.value.replace(reg, "");
-    setFieldList([...fieldList]);
+    setFieldList(
+      _.sortBy(
+        _.uniqBy(request_field_list.data.data, "FIELD_NAME"),
+        "INPUT_LABEL"
+      )
+    );
   };
 
   return (
@@ -61,37 +61,54 @@ const MakeFieldList = ({
               : "makeFieldListRight close"
           }
         >
-          <h3 className="makeFieldListTitle">Field List 작성</h3>
+          <h3 className="makeFieldListTitle">BP 선택</h3>
           <div className="makeFieldListAddButton">
-            <Button
-              variant="outlined"
-              sx={{ width: "100px" }}
-              onClick={() => handleFieldList("add")}
-            >
-              추가
-            </Button>
-            <Button
-              variant="outlined"
-              sx={{ width: "100px" }}
-              onClick={() => handleFieldList("remove")}
-            >
-              제거
-            </Button>
+            {/* <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">BP Selct</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="BP Selct"
+                sx={{ width: "100%" }}
+                onChange={requestFieldList}
+                value={selectValue}
+              >
+                {bplist.length > 0 &&
+                  bplist.map((com, idx) => {
+                    return (
+                      <MenuItem key={idx} value={com.BP_TYPE}>
+                        {com.BP_NAME}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </FormControl> */}
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={bplist}
+              getOptionLabel={(user) => {
+                return user["BP_NAME"] || "!";
+              }}
+              getOptionSelected={(option, value) => {
+                return option["BP_TYPE"] === value;
+              }}
+              onChange={(e, n) => requestFieldList(e, n)}
+              sx={{ width: "100%" }}
+              renderInput={(params) => <TextField {...params} label="Movie" />}
+            />
           </div>
+          <br />
+          <h3 className="makeFieldListTitle">BP Field List</h3>
           <div className="makeFieldListInputArea">
-            {fieldList.map((com, idx) => {
-              return (
-                <TextField
-                  key={idx}
-                  id="filled-basic"
-                  label="Field Name"
-                  variant="filled"
-                  sx={{ marginTop: "10px", width: "280px" }}
-                  onChange={(e) => changeFieldListContents(e, idx)}
-                  value={com}
-                />
-              );
-            })}
+            {fieldList.length > 0 &&
+              fieldList.map((com, idx) => {
+                return (
+                  <div className="makeFieldListDetail" key={idx}>
+                    {com.INPUT_LABEL}
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}
